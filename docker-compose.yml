@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: postgres
+    restart: always
+    environment: 
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+    ports:
+      - '5432:5432'
+
+  dotnet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dotnet_app
+    depends_on:
+      - mysql
+    environment:
+      CONNECTION_STRING: "User Id=postgres; Password=password; Host=localhost; Port=5432; Database=postgres Server=localhost"
+    ports:
+      - "8080:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
